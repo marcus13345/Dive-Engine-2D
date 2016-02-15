@@ -105,10 +105,21 @@ public class SceneManager {
 								System.out.println("" + componentClass + " is not of type component!");
 								continue;
 							}
-						} catch( ClassNotFoundException e ) {
-							System.out.println("Component " + componentClass + " not found!");
-							continue;
+						} catch( ClassNotFoundException e) {
+							try {
+								Object maybeComponent = Class.forName("diveengine2d." + componentClass).newInstance();
+								if(maybeComponent instanceof DiveScript) {
+									component = (DiveScript)maybeComponent;
+								}else {
+									System.out.println("" + componentClass + " is not of type component!");
+									continue;
+								}
+							} catch( ClassNotFoundException ex) {
+								System.out.println("Component " + componentClass + " not found!");
+								continue;
+							}
 						}
+						component.create();
 						component.entity = (Entity) scopeObject.peek();
 						((Entity)scopeObject.peek()).addComponent(component);
 						scopeObject.push(component);
