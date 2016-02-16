@@ -65,10 +65,12 @@ public class Engine extends Canvas {
 		bs = getBufferStrategy();
 		
 		while(true) {
+			long startTime = System.currentTimeMillis();
 			updateScene();
 			repaint();
+			int elapsed = (int)(System.currentTimeMillis() - startTime);
 			try{
-				Thread.sleep(17);
+				Thread.sleep(16 - elapsed);
 			}catch(Exception e) {
 				
 			}
