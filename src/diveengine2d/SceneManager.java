@@ -70,7 +70,7 @@ public class SceneManager {
 							Color color = new Color(r, g, b);
 							
 							scopeObject.peek().getClass().getField(key).set(scopeObject.peek(), color);
-						}else if(value.endsWith("F") || value.endsWith("f")) {
+						}else if(value.endsWith("I") || value.endsWith("i")) {
 							value = value.substring(0, value.length() - 1);
 							
 							int intValue;
@@ -78,6 +78,18 @@ public class SceneManager {
 								intValue = Integer.parseInt(value);
 							}catch(Exception e) {
 								System.out.println(value + " is not an int");
+								continue;
+							}
+							
+							scopeObject.peek().getClass().getField(key).set(scopeObject.peek(), intValue);
+						}else if(value.endsWith("F") || value.endsWith("f")) {
+							value = value.substring(0, value.length() - 1);
+							
+							float intValue;
+							try{
+								intValue = Float.parseFloat(value);
+							}catch(Exception e) {
+								System.out.println(value + " is not a float");
 								continue;
 							}
 							
@@ -120,12 +132,16 @@ public class SceneManager {
 								continue;
 							}
 						}
-						component.create();
 						component.entity = (Entity) scopeObject.peek();
 						((Entity)scopeObject.peek()).addComponent(component);
 						scopeObject.push(component);
 					}else if (line.equals("End Component")) {
 						scopeObject.pop();
+					}
+				}
+				for(Entity e : entities) {
+					for(DiveScript script : e.components) {
+						script.create();
 					}
 				}
 			}catch(Exception e) {

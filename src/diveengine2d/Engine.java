@@ -67,10 +67,12 @@ public class Engine extends Canvas {
 		while(true) {
 			long startTime = System.currentTimeMillis();
 			updateScene();
-			repaint();
+			Graphics2D g = (Graphics2D)bs.getDrawGraphics();
+			render(g);
+			bs.show();
 			int elapsed = (int)(System.currentTimeMillis() - startTime);
 			try{
-				Thread.sleep(16 - elapsed);
+				Thread.sleep(17 - elapsed);
 			}catch(Exception e) {
 				
 			}
@@ -140,17 +142,6 @@ public class Engine extends Canvas {
 
 		System.out.println("Loaded Config File...");
 
-	}
-
-	public void update(Graphics g) {
-		Graphics2D g2 = null;
-		try {
-			g2 = (Graphics2D) bs.getDrawGraphics();
-			render(g2);
-		} finally {
-			g2.dispose();
-		}
-		bs.show();
 	}
 
 	private void render(Graphics2D g) {
