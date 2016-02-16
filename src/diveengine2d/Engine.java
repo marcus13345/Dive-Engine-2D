@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -57,11 +58,14 @@ public class Engine extends Canvas {
 		frame.pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		this.requestFocus();
+		this.addKeyListener(new Input());
+		
 		createBufferStrategy(2);
 		bs = getBufferStrategy();
 		
 		while(true) {
+			updateScene();
 			repaint();
 			try{
 				Thread.sleep(17);
@@ -71,17 +75,21 @@ public class Engine extends Canvas {
 		}
 
 	}
+	
+	private void updateScene() {
+		SceneManager.updateAll();
+	}
 
 	private void loadConfig() throws Exception {
 
 		File configFile = null;
 		try {
-			configFile = new File(gameFolder + "\\build.config");
+			configFile = new File(gameFolder + File.separatorChar + "build.config");
 		} catch (Exception e) {
 			throw new Exception("Configuration File not found");
 		}
 
-		List<String> lines = Files.readAllLines(Paths.get(gameFolder, "build.config"));
+		List<String> lines = Files.readAllLines(Paths.get(gameFolder, "build.config"), Charset.forName("UTF-8"));
 
 		for (String line : lines) {
 

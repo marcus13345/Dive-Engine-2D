@@ -1,6 +1,7 @@
 package diveengine2d;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class SceneManager {
 	public static boolean loadScene(String scene) {
 		synchronized(entities) {
 			try{
-				List<String> lines = Files.readAllLines(Paths.get(Engine.gameFolder, scene + ".scene"));
+				List<String> lines = Files.readAllLines(Paths.get(Engine.gameFolder, scene + ".scene"), Charset.forName("UTF-8"));
 				Stack<Object> scopeObject = new Stack<Object>();
 				for (String line : lines) {
 					//System.out.println(line);
@@ -149,6 +150,14 @@ public class SceneManager {
 		for(Entity e : entities) {
 			for(DiveScript script : e.components) {
 				script.render(g);
+			}
+		}
+	}
+
+	public static void updateAll() {
+		for(Entity e : entities) {
+			for(DiveScript script : e.components) {
+				script.update();
 			}
 		}
 	}
