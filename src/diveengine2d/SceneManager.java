@@ -74,6 +74,7 @@ public class SceneManager {
 						scopeObject.peek().getClass().getField(key).set(scopeObject.peek(), value);
 					}else if(value.startsWith("#")) {
 						value = value.substring(1, value.length());
+						
 						//TODO CHECK IF 6 characters
 						int r = Integer.parseInt(value.substring(0, 2), 16);
 						int g = Integer.parseInt(value.substring(2, 4), 16);
