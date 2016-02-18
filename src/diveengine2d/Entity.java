@@ -10,6 +10,15 @@ public class Entity {
 	
 	public List<DiveScript> components = new ArrayList<DiveScript>();
 	
+	public <T extends DiveScript> T getComponent(Class<T> componentType) {
+		for(DiveScript script : components) {
+			if(script.getClass().isAssignableFrom(componentType)) {
+				return (T) script;
+			}
+		}
+		return null;
+	}
+	
 	public String toString() {
 		return	"name: " + name + "\n" +
 				"GUID: " + GUID +
