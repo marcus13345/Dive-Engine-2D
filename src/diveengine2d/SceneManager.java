@@ -43,8 +43,12 @@ public class SceneManager {
 					try{
 						entityClass = Class.forName(newLine);
 					}catch(ClassNotFoundException e) {
-						System.out.println(newLine + " class not found!");
-						continue;
+						try{
+							entityClass = Class.forName("diveengine2d." + newLine);
+						}catch(ClassNotFoundException ex) {
+							System.out.println(newLine + " class not found!");
+							continue;
+						}
 					}
 					Object object = entityClass.newInstance();
 					if(!(object instanceof Entity)) {
