@@ -19,7 +19,6 @@ public class Engine extends Canvas {
 	public static int WIDTH, HEIGHT;
 	public static String startScene = null;
 	public static String name = null;
-	public static BufferStrategy bs;
 
 	public Engine(String gameFolder) {
 
@@ -61,23 +60,34 @@ public class Engine extends Canvas {
 		this.requestFocus();
 		this.addKeyListener(new Input());
 		
-		createBufferStrategy(2);
-		bs = getBufferStrategy();
+		//createBufferStrategy(2);
+		//bs = getBufferStrategy();
+		
+		Time.nanos = System.nanoTime();
 		
 		while(true) {
-			long startTime = System.currentTimeMillis();
-			updateScene();
-			Graphics2D g = (Graphics2D)bs.getDrawGraphics();
-			render(g);
-			bs.show();
-			int elapsed = (int)(System.currentTimeMillis() - startTime);
-			try{
-				Thread.sleep(17 - elapsed);
-			}catch(Exception e) {
-				
+			
+			Time.startTime = System.currentTimeMillis();
+			if (System.currentTimeMillis() > Time.nextSecond) {
+				Time.nextSecond += 1000;
+				Time.FPS = Time.framesInCurrentSecond;
+				Time.framesInCurrentSecond = 0;
+				//System.out.println("FPS: " + Time.FPS);
 			}
-		}
+			Time.framesInCurrentSecond++;
 
+			render();
+			updateScene();
+			Time.tickTime = (System.nanoTime() - Time.nanos)/1000d;
+			Time.deltaTime = Time.tickTime * Time.timeScale;
+			Time.nanos = System.nanoTime();
+//			System.out.println("dTime: " + Time.deltaTime);
+		}
+		
+	}
+	
+	private void render() {
+		repaint();
 	}
 	
 	private void updateScene() {
@@ -144,8 +154,8 @@ public class Engine extends Canvas {
 
 	}
 
-	private void render(Graphics2D g) {
-		SceneManager.render(g);
+	public void update(Graphics g) {
+		SceneManager.render((Graphics2D)g);
 		g.setColor(Color.BLACK);
 	}
 }
