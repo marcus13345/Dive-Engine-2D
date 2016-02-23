@@ -2,13 +2,14 @@ package diveengine2d;
 
 public class RigidBody extends DiveScript{
 	
-	public float dx, dy, drot;
-	public float friction;
+	public double dx, dy, drot;
+	public double friction;
 	
 	public void update() {
-		entity.x += dx;
-		entity.y += dy;
-		entity.rotation += drot;
+		entity.x += dx * Time.deltaTime;
+		entity.y += dy * Time.deltaTime;
+		entity.rotation += drot * Time.deltaTime;
+		double friction = 1 - ((1 - this.friction) * Time.deltaTime);
 		dx *= friction;
 		dy *= friction;
 		drot *= friction;
