@@ -16,5 +16,6 @@ public class RectRenderer extends DiveScript{
 		g.setColor(color);
 		g.fillRect((int)entity.x, (int)entity.y, width, height);
 		//System.out.println("" + entity.x + " " + entity.y);
+		g.drawString("" + Time.deltaTime, 100, 100);
 	}
 }
