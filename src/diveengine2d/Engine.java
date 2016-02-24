@@ -101,18 +101,7 @@ public class Engine extends Canvas {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		render(g);
 		DebugSettings.render(g);
-
-		Vector2 a = new Vector2(512, 100);
-		Vector2 b = new Vector2(256, 200);
-		Vector2 c = new Vector2(768, 400);
-		Vector2 mouse = new Vector2(Input.mouseX, Input.mouseY);
-		
-		g.setColor(DiveMath.inTriangle(a, b, c, mouse) ? Color.GREEN : Color.RED);
-
-		g.fillOval((int)a.x, (int)a.y, 10, 10);
-		g.fillOval((int)b.x, (int)b.y, 10, 10);
-		g.fillOval((int)c.x, (int)c.y, 10, 10);
-		
+		Tests.run(g);
 		bs.show();
 	}
 	

@@ -17,14 +17,18 @@ public class RectRenderer extends DiveScript{
 	public void render(Graphics2D g) {
 		//g.rotate(Math.toRadians(i+=Time.deltaTime));
 		g.setColor(color);
-		Polygon p = new Polygon(new int[]{0, width, width, 0}, new int[]{0, 0, height, height}, 4);
-		for(int i = 0; i < p.npoints; i ++) {
-			
-		}
-		p.translate((int)entity.x, (int)entity.y);
-		g.fillPolygon(p);
 		
-		//g.fillRect((int)entity.x, (int)entity.y, width, height);
+		/* MAINTAINED FOR USAGE IN ROTATION BRANCH
+		Polygon polygon = new Polygon(new int[]{0, width, width, 0}, new int[]{0, 0, height, height}, 4);
+		
+		if(entity.name.equals("Player"))
+			polygon = DiveMath.rotatePolygon(polygon, (float)Math.toRadians(i+=Time.deltaTime), new Vector2(entity.x + width/2, entity.y + height/2));
+			polygon = DiveMath.rotatePolygon(polygon, 0, new Vector2(entity.x + width/2, entity.y + height/2));
+		polygon.translate((int)entity.x, (int)entity.y);
+		g.fillPolygon(polygon);
+		*/
+		
+		g.fillRect((int)entity.x, (int)entity.y, width, height);
 		//g.rotate(Math.toRadians(-i));
 	}
 }
