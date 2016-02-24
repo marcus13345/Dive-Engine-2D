@@ -188,6 +188,7 @@ public class SceneManager {
 			for(DiveScript script : e.components) {
 				script.render(g);
 			}
+			e.render(g);
 		}
 	}
 
@@ -197,5 +198,9 @@ public class SceneManager {
 				script.update();
 			}
 		}
+	}
+
+	public static int entityCount() {
+		return entities.size();
 	}
 }

@@ -1,4 +1,5 @@
 package diveengine2d;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ public class Entity {
 	
 	public List<DiveScript> components = new ArrayList<DiveScript>();
 	
+	@SuppressWarnings("unchecked") //HACK because it is checked, java is just duuuumb
 	public <T extends DiveScript> T getComponent(Class<T> componentType) {
 		for(DiveScript script : components) {
 			if(script.getClass().isAssignableFrom(componentType)) {
@@ -35,5 +37,9 @@ public class Entity {
 
 	public void addComponent(DiveScript component) {
 		components.add(component);
+	}
+	
+	public void render(Graphics2D g) {
+		if(DebugSettings.debugLevel > 0) g.drawString("" + x + ", " + y, x, y - 2);
 	}
 }

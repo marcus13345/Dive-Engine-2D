@@ -9,5 +9,6 @@ public class Time {
 	public static double timeScale = 1;
 	public static double deltaTime = 0;
 	public static long nextSecond = System.currentTimeMillis() + 1000, startTime = 0;
+	public static double timedFramesCurrent;
 	
 }

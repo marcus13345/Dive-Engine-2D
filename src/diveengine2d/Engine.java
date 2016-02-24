@@ -3,8 +3,8 @@ package diveengine2d;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferStrategy;
 import java.io.File;
 import java.nio.charset.Charset;
@@ -19,7 +19,7 @@ public class Engine extends Canvas {
 	public static int WIDTH, HEIGHT;
 	public static String startScene = null;
 	public static String name = null;
-	public static BufferStrategy bs;
+	public static BufferStrategy bs = null;
 
 	public Engine(String gameFolder) {
 
@@ -60,24 +60,60 @@ public class Engine extends Canvas {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.requestFocus();
 		this.addKeyListener(new Input());
+		this.addMouseMotionListener(new Input());
+		this.addMouseListener(new Input());
 		
 		createBufferStrategy(2);
 		bs = getBufferStrategy();
 		
+		Time.nanos = System.nanoTime();
+		
+		
 		while(true) {
-			long startTime = System.currentTimeMillis();
-			updateScene();
-			Graphics2D g = (Graphics2D)bs.getDrawGraphics();
-			render(g);
-			bs.show();
-			int elapsed = (int)(System.currentTimeMillis() - startTime);
-			try{
-				Thread.sleep(17 - elapsed);
-			}catch(Exception e) {
-				
+			
+			Time.startTime = System.currentTimeMillis();
+			if (System.currentTimeMillis() > Time.nextSecond) {
+				Time.nextSecond += 1000;
+				Time.FPS = Time.framesInCurrentSecond;
+				Time.framesInCurrentSecond = 0;
+				System.out.println("Timed Frames: " + Time.timedFramesCurrent);
+				System.out.println("Calculated Frames: " + Time.FPS);
+				Time.timedFramesCurrent = 0;
 			}
+			Time.framesInCurrentSecond++;
+
+			render();
+			updateScene();
+			Time.tickTime = (System.nanoTime() - Time.nanos)/16640000d;
+			Time.deltaTime = Time.tickTime * Time.timeScale;
+			Time.nanos = System.nanoTime();
+//			System.out.println("dTime: " + Time.deltaTime);
+			
+			Time.timedFramesCurrent += Time.deltaTime;
+			
 		}
 
+	}
+	
+	public void render() {
+		Graphics2D g = (Graphics2D)bs.getDrawGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		render(g);
+		DebugSettings.render(g);
+
+		Vector2 a = new Vector2(512, 100);
+		Vector2 b = new Vector2(256, 200);
+		Vector2 c = new Vector2(768, 400);
+		Vector2 mouse = new Vector2(Input.mouseX, Input.mouseY);
+		
+		g.setColor(DiveMath.inTriangle(a, b, c, mouse) ? Color.GREEN : Color.RED);
+
+		g.fillOval((int)a.x, (int)a.y, 10, 10);
+		g.fillOval((int)b.x, (int)b.y, 10, 10);
+		g.fillOval((int)c.x, (int)c.y, 10, 10);
+		
+		bs.show();
 	}
 	
 	private void updateScene() {
@@ -112,7 +148,7 @@ public class Engine extends Canvas {
 			parts[1] = parts[1].trim();
 
 			if (parts[0].equals("StartScene")) {
-				this.startScene = parts[1];
+				Engine.startScene = parts[1];
 			} else if (parts[0].equals("Resolution")) {
 
 				String[] resparts = parts[1].split("x");
@@ -143,7 +179,6 @@ public class Engine extends Canvas {
 		System.out.println("Loaded Config File...");
 
 	}
-
 	private void render(Graphics2D g) {
 		SceneManager.render(g);
 		g.setColor(Color.BLACK);
