@@ -140,7 +140,7 @@ public class SceneManager {
 						}
 					} catch( ClassNotFoundException e) {
 						try {
-							Object maybeComponent = Class.forName("diveengine2d." + componentClass).newInstance();
+							Object maybeComponent = Class.forName("diveengine2d.components." + componentClass).newInstance();
 							if(maybeComponent instanceof DiveScript) {
 								component = (DiveScript)maybeComponent;
 							}else {
