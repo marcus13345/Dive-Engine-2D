@@ -1,9 +1,13 @@
-package diveengine2d;
+package diveengine2d.components;
+
+import diveengine2d.DebugSettings;
+import diveengine2d.DiveScript;
+import diveengine2d.Time;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-public class RigidBody extends DiveScript{
+public class RigidBody extends DiveScript {
 
 	private static Color xAxisColor = new Color(244, 67, 54); //A500 red
 	private static Color yAxisColor = new Color(33, 150, 243); //A500 blue

@@ -1,10 +1,12 @@
-package diveengine2d;
+package diveengine2d.components;
+
+import diveengine2d.DiveScript;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 
-public class RectRenderer extends DiveScript{
+public class RectRenderer extends DiveScript {
 	
 	public Color color = null;
 	public int width, height;

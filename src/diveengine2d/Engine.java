@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class Engine extends Canvas {
 	public static String gameFolder = null;
@@ -20,11 +20,12 @@ public class Engine extends Canvas {
 	public static String startScene = null;
 	public static String name = null;
 	public static BufferStrategy bs = null;
+	public static boolean running = true;
 
 	public Engine(String gameFolder) {
 
 		// setup the folder
-		this.gameFolder = gameFolder;
+		Engine.gameFolder = gameFolder;
 
 		System.out.println("Engine started with folder " + gameFolder + " ...");
 
@@ -57,7 +58,7 @@ public class Engine extends Canvas {
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		frame.pack();
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.requestFocus();
 		this.addKeyListener(new Input());
 		this.addMouseMotionListener(new Input());
@@ -67,9 +68,8 @@ public class Engine extends Canvas {
 		bs = getBufferStrategy();
 		
 		Time.nanos = System.nanoTime();
-		
-		
-		while(true) {
+
+		while(running) {
 			
 			Time.startTime = System.currentTimeMillis();
 			if (System.currentTimeMillis() > Time.nextSecond) {
@@ -111,9 +111,8 @@ public class Engine extends Canvas {
 
 	private void loadConfig() throws Exception {
 
-		File configFile = null;
 		try {
-			configFile = new File(gameFolder + File.separatorChar + "build.config");
+			new File(gameFolder + File.separatorChar + "build.config");
 		} catch (Exception e) {
 			throw new Exception("Configuration File not found");
 		}

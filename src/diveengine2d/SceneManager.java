@@ -93,12 +93,15 @@ public class SceneManager {
 						int intValue;
 						try{
 							intValue = Integer.parseInt(value);
-						}catch(Exception e) {
+							scopeObject.peek().getClass().getField(key).set(scopeObject.peek(), intValue);
+						}catch(NoSuchFieldException e) {
+							System.out.println(value + " isnt a property of " + ((DiveScript)scopeObject.peek()).name + "(" + scopeObject.peek() + ")");
+							continue;
+						}catch(NumberFormatException  e) {
 							System.out.println(value + " is not an int");
 							continue;
 						}
-						
-						scopeObject.peek().getClass().getField(key).set(scopeObject.peek(), intValue);
+
 					}else if(value.endsWith("F") || value.endsWith("f")) {
 						value = value.substring(0, value.length() - 1);
 						
@@ -168,7 +171,7 @@ public class SceneManager {
 			}
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
-			return null;
+
 		}
 		
 		return entities;
