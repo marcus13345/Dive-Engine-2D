@@ -186,12 +186,12 @@ public class SceneManager {
 		}
 	}
 
-	public static void render(Graphics2D g) {
+	public static void render() {
 		for(Entity e : entities) {
 			for(DiveScript script : e.components) {
-				script.render(g);
+				script.render();
 			}
-			e.render(g);
+			e.render();
 		}
 	}
 

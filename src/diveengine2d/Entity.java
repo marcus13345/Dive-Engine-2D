@@ -3,6 +3,8 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
+
 public class Entity {
 	public float x = 0, y = 0, rotation = 0;
 	public boolean enabled = true;
@@ -39,7 +41,10 @@ public class Entity {
 		components.add(component);
 	}
 	
-	public void render(Graphics2D g) {
-		if(DebugSettings.debugLevel > 0) g.drawString("" + x + ", " + y, x, y - 2);
+	public void render() {
+		//if(DebugSettings.debugLevel > 0) g.drawString("" + x + ", " + y, x, y - 2);
+		Color.white.bind();
+		  
+        Fonts.defaultFont.drawString(100, 50, "THE LIGHTWEIGHT JAVA GAMES LIBRARY", Color.yellow);
 	}
 }

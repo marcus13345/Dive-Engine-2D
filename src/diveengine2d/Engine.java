@@ -78,6 +78,7 @@ public class Engine {
 		Tests.run(g);
 		bs.show();
 		*/
+		SceneManager.render();
 	}
 	
 	private void updateScene() {
@@ -218,7 +219,25 @@ public class Engine {
 
 			//glRotatef(50.f, 0.f, 0.f, 1.f);
 			
+			Time.startTime = System.currentTimeMillis();
+			if (System.currentTimeMillis() > Time.nextSecond) {
+				Time.nextSecond += 1000;
+				Time.FPS = Time.framesInCurrentSecond;
+				Time.framesInCurrentSecond = 0;
+				System.out.println("Timed Frames: " + Time.timedFramesCurrent);
+				System.out.println("Calculated Frames: " + Time.FPS);
+				Time.timedFramesCurrent = 0;
+			}
+			Time.framesInCurrentSecond++;
+
+			render();
+			updateScene();
+			Time.tickTime = (System.nanoTime() - Time.nanos)/16640000d;
+			Time.deltaTime = Time.tickTime * Time.timeScale;
+			Time.nanos = System.nanoTime();
+//			System.out.println("dTime: " + Time.deltaTime);
 			
+			Time.timedFramesCurrent += Time.deltaTime;
 			
 			glfwSwapBuffers(window);
 			glfwPollEvents();

@@ -27,5 +27,5 @@ public abstract class DiveScript {
 	 * render method beeboop
 	 * @param g
 	 */
-	public void render(Graphics2D g) {}
+	public void render() {}
 }
