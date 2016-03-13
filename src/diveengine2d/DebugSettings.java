@@ -21,7 +21,7 @@ public class DebugSettings {
 		x += 10;
 		y += 20;
 		int yOff = 20;
-		g.drawString("" + Time.FPS, x, y);
+		g.drawString("" + Time.renderTime, x, y);
 		y += yOff;
 		g.drawString("" + Time.timedFramesCurrent, x, y);
 		y += yOff;

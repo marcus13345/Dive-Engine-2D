@@ -14,7 +14,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener{
 	private static List<KeyListener> listeners = new ArrayList<KeyListener>();
 	public static int mouseX, mouseY;
 	public static boolean mouse = false;
-	
+
 	public static void addKeyListener(KeyListener listener) {
 		listeners.add(listener);
 	}
