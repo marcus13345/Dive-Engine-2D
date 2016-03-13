@@ -13,7 +13,8 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener{
 	private static boolean[] keys = new boolean[512];
 	private static List<KeyListener> listeners = new ArrayList<KeyListener>();
 	public static int mouseX, mouseY;
-	
+	public static boolean mouse = false;
+
 	public static void addKeyListener(KeyListener listener) {
 		listeners.add(listener);
 	}
@@ -61,14 +62,12 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener{
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouse = true;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		mouse = false;
 	}
 
 	@Override

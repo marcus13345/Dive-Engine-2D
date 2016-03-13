@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 public class Tests {
 
 	public static void run(Graphics2D g) {
-		triangleTest(g);
-		coordinateTest(g);
+		//triangleTest(g);
+		//coordinateTest(g);
 	}
 
 	private static void coordinateTest(Graphics2D g) {

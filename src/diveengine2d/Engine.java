@@ -1,30 +1,33 @@
 package diveengine2d;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferStrategy;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.swing.JFrame;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.system.MemoryUtil.*;
 
-public class Engine extends Canvas {
+public class Engine {
 	public static String gameFolder = null;
 	public static int WIDTH, HEIGHT;
 	public static String startScene = null;
 	public static String name = null;
-	public static BufferStrategy bs = null;
+
+	//literally a byte address
+	private long window;
 
 	public Engine(String gameFolder) {
 
 		// setup the folder
-		this.gameFolder = gameFolder;
+		Engine.gameFolder = gameFolder;
 
 		System.out.println("Engine started with folder " + gameFolder + " ...");
 
@@ -52,50 +55,21 @@ public class Engine extends Canvas {
 
 		SceneManager.entityDump();
 
-		JFrame frame = new JFrame(name);
-		frame.add(this);
-		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		frame.pack();
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.requestFocus();
-		this.addKeyListener(new Input());
-		this.addMouseMotionListener(new Input());
-		this.addMouseListener(new Input());
-		
-		createBufferStrategy(2);
-		bs = getBufferStrategy();
-		
-		Time.nanos = System.nanoTime();
-		
-		
-		while(true) {
-			
-			Time.startTime = System.currentTimeMillis();
-			if (System.currentTimeMillis() > Time.nextSecond) {
-				Time.nextSecond += 1000;
-				Time.FPS = Time.framesInCurrentSecond;
-				Time.framesInCurrentSecond = 0;
-				System.out.println("Timed Frames: " + Time.timedFramesCurrent);
-				System.out.println("Calculated Frames: " + Time.FPS);
-				Time.timedFramesCurrent = 0;
-			}
-			Time.framesInCurrentSecond++;
+		try {
+			init();
+			loop();
 
-			render();
-			updateScene();
-			Time.tickTime = (System.nanoTime() - Time.nanos)/16640000d;
-			Time.deltaTime = Time.tickTime * Time.timeScale;
-			Time.nanos = System.nanoTime();
-//			System.out.println("dTime: " + Time.deltaTime);
-			
-			Time.timedFramesCurrent += Time.deltaTime;
-			
+			// Destroy window and window callbacks
+			glfwDestroyWindow(window);
+		} finally {
+			// Terminate GLFW and free the GLFWErrorCallback
+			glfwTerminate();
 		}
 
 	}
 	
 	public void render() {
+		/*
 		Graphics2D g = (Graphics2D)bs.getDrawGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -103,6 +77,7 @@ public class Engine extends Canvas {
 		DebugSettings.render(g);
 		Tests.run(g);
 		bs.show();
+		*/
 	}
 	
 	private void updateScene() {
@@ -111,9 +86,8 @@ public class Engine extends Canvas {
 
 	private void loadConfig() throws Exception {
 
-		File configFile = null;
 		try {
-			configFile = new File(gameFolder + File.separatorChar + "build.config");
+			new File(gameFolder + File.separatorChar + "build.config");
 		} catch (Exception e) {
 			throw new Exception("Configuration File not found");
 		}
@@ -168,8 +142,86 @@ public class Engine extends Canvas {
 		System.out.println("Loaded Config File...");
 
 	}
-	private void render(Graphics2D g) {
-		SceneManager.render(g);
-		g.setColor(Color.BLACK);
+
+	private void init() {
+		// Setup an error callback. The default implementation
+		// will print the error message in System.err.
+
+		// Initialize GLFW. Most GLFW functions will not work before doing this.
+		if ( glfwInit() != GLFW_TRUE )
+			throw new IllegalStateException("Unable to initialize GLFW");
+
+		// Configure our window
+		glfwDefaultWindowHints(); // optional, the current window hints are already the default
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+
+		// Create the window
+		window = glfwCreateWindow(WIDTH, HEIGHT, name, NULL, NULL);
+		if ( window == NULL )
+			throw new RuntimeException("Failed to create the GLFW window");
+
+		// Get the resolution of the primary monitor
+		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		// Center our window
+		glfwSetWindowPos(
+				window,
+				(vidmode.width() - WIDTH) / 2,
+				(vidmode.height() - HEIGHT) / 2
+		);
+
+		// Make the OpenGL context current
+		glfwMakeContextCurrent(window);
+		// Enable v-sync
+		glfwSwapInterval(1);
+
+		// Make the window visible
+		glfwShowWindow(window);
+		
+		GL.createCapabilities();
+		
+		//glViewport(0, 0, WIDTH, HEIGHT);
+		//glMatrixMode(GL_PROJECTION);
+		//glLoadIdentity();
+		glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
+		/*
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
+		glMatrixMode(GL_MODELVIEW);
+	    */
+		
+		//ratio = WIDTH / (float) HEIGHT;
+		
+
+		// Set the clear color
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		
+	}
+
+	private void loop() {
+		// This line is critical for LWJGL's interoperation with GLFW's
+		// OpenGL context, or any context that is managed externally.
+		// LWJGL detects the context that is current in the current thread,
+		// creates the GLCapabilities instance and makes the OpenGL
+		// bindings available for use.
+		
+		
+		
+
+		// Run the rendering loop until the user has attempted to close
+		// the window or has pressed the ESCAPE key.
+		while ( glfwWindowShouldClose(window) == GLFW_FALSE ) {
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+
+			//glRotatef(50.f, 0.f, 0.f, 1.f);
+			
+			
+			
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+		}
 	}
 }
