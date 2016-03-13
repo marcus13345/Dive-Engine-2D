@@ -21,10 +21,6 @@ public class Engine {
 	public static String startScene = null;
 	public static String name = null;
 
-	// no fucking clue.
-	private GLFWErrorCallback errorCallback;
-	private GLFWKeyCallback keyCallback;
-
 	//literally a byte address
 	private long window;
 
@@ -160,11 +156,8 @@ public class Engine {
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
-		int WIDTH = 300;
-		int HEIGHT = 300;
-
 		// Create the window
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Hello World!", NULL, NULL);
+		window = glfwCreateWindow(WIDTH, HEIGHT, name, NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -184,6 +177,28 @@ public class Engine {
 
 		// Make the window visible
 		glfwShowWindow(window);
+		
+		GL.createCapabilities();
+		
+		//glViewport(0, 0, WIDTH, HEIGHT);
+		//glMatrixMode(GL_PROJECTION);
+		//glLoadIdentity();
+		glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
+		/*
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
+		glMatrixMode(GL_MODELVIEW);
+	    */
+		
+		//ratio = WIDTH / (float) HEIGHT;
+		
+
+		// Set the clear color
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		
 	}
 
 	private void loop() {
@@ -192,42 +207,19 @@ public class Engine {
 		// LWJGL detects the context that is current in the current thread,
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
-		glMatrixMode(GL_MODELVIEW);
-
-		GL.createCapabilities();
-
-		// Set the clear color
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		
+		
+		
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while ( glfwWindowShouldClose(window) == GLFW_FALSE ) {
-			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-			float ratio;
-			//glfwGetFramebufferSize(window, &width, &height);
-
-
-			ratio = WIDTH / (float) HEIGHT;
-			glViewport(0, 0, WIDTH, HEIGHT);
-			glClear(GL_COLOR_BUFFER_BIT);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
-			glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-			glBegin(GL_TRIANGLES);
-			glColor3f(1.f, 0.f, 0.f);
-			glVertex3f(-0.6f, -0.4f, 0.f);
-			glColor3f(0.f, 1.f, 0.f);
-			glVertex3f(0.6f, -0.4f, 0.f);
-			glColor3f(0.f, 0.f, 1.f);
-			glVertex3f(0.f, 0.6f, 0.f);
-			glEnd();
+			//glRotatef(50.f, 0.f, 0.f, 1.f);
+			
+			
+			
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}

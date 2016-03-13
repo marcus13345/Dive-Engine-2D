@@ -7,6 +7,8 @@ import diveengine2d.Time;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class RigidBody extends DiveScript {
 
 	private static Color xAxisColor = new Color(244, 67, 54); //A500 red
@@ -35,6 +37,13 @@ public class RigidBody extends DiveScript {
 			g.drawLine((int)entity.x, (int)entity.y, (int)entity.x, (int)entity.y+(int)(dy*20));
 			g.setColor(debugColor);
 			g.drawLine((int)entity.x, (int)entity.y, (int)entity.x+(int)(dx*15), (int)entity.y+(int)(dy*15));
+			
+			glLineWidth(2.5f); 
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glBegin(GL_LINES);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(15f, 0f, 0f);
+			glEnd();
 		}
 	}
 }
